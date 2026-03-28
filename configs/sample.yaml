@@ -1,0 +1,31 @@
+# ---------------------------------------------------------------------------
+# Sampling / generation configuration
+# ---------------------------------------------------------------------------
+
+# Checkpoint to load
+checkpoint: "outputs/checkpoints/best.pt"
+
+# Diffusion sampler settings
+sampler:
+  method: "ddpm"          # "ddpm" or "ddim"
+  ddim_steps: 50          # used only when method == "ddim"
+  eta: 0.0                # DDIM stochasticity (0 = deterministic)
+
+# Generation
+num_samples: 10000        # total scenarios to generate
+batch_size: 512           # batch size during sampling
+seed: 0
+
+# Conditioning
+condition_on_tail: true   # generate only tail scenarios when true
+tail_label: 1             # 1 = tail event, 0 = normal
+
+# Output
+samples_dir: "outputs/samples"
+samples_file: "generated_scenarios.npz"
+
+# Evaluation after sampling
+run_evaluate: true
+train_cfg: "configs/train.yaml"   # model architecture and diffusion config
+figures_dir: "outputs/figures"
+tables_dir:  "outputs/tables"

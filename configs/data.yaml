@@ -1,0 +1,33 @@
+# ---------------------------------------------------------------------------
+# Data configuration
+# ---------------------------------------------------------------------------
+
+# List of ticker symbols to download
+tickers:
+  - SPY    # S&P 500 ETF
+  - QQQ    # Nasdaq-100 ETF
+  - TLT    # 20+ Year Treasury Bond ETF
+  - GLD    # Gold ETF
+  - VIX    # CBOE Volatility Index (^VIX via yfinance)
+
+# Download window
+start_date: "2000-01-03"
+end_date:   "2024-12-31"
+
+# Paths
+raw_dir:       "data/raw"
+processed_dir: "data/processed"
+
+# Feature engineering
+return_type: "log"        # "log" or "simple"
+window_size: 252          # rolling window for normalisation (trading days)
+tail_quantile: 0.05       # left-tail threshold for binary tail label
+
+# Train / val / test split (fractions, must sum to 1)
+split:
+  train: 0.70
+  val:   0.15
+  test:  0.15
+
+# Sequence length fed to the model
+seq_len: 20               # number of past days used as context

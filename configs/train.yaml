@@ -1,0 +1,53 @@
+# ---------------------------------------------------------------------------
+# Training configuration
+# ---------------------------------------------------------------------------
+
+# Reproducibility
+seed: 42
+
+# Data
+data_cfg: "configs/data.yaml"
+
+# Model architecture
+model:
+  in_channels: 5          # number of asset return channels
+  hidden_dim: 256
+  num_res_blocks: 4
+  attn_resolutions: [10]
+  dropout: 0.1
+  cond_dim: 32            # conditioning embedding dimension
+
+# Diffusion
+diffusion:
+  timesteps: 1000
+  beta_schedule: "cosine" # "linear" or "cosine"
+  beta_start: 1.0e-4
+  beta_end: 0.02
+
+# Optimiser
+optimizer:
+  name: "adamw"
+  lr: 2.0e-4
+  weight_decay: 1.0e-4
+  betas: [0.9, 0.999]
+
+# Learning-rate scheduler
+scheduler:
+  name: "cosine"          # "cosine" or "step"
+  T_max: 100
+  eta_min: 1.0e-6
+
+# Training loop
+batch_size: 128
+num_epochs: 100
+grad_clip: 1.0
+eval_every: 5             # evaluate on val set every N epochs
+save_every: 10            # save checkpoint every N epochs
+
+# Paths
+checkpoint_dir: "outputs/checkpoints"
+log_dir:        "outputs/logs"
+
+# Experiment tracking
+use_wandb: false
+wandb_project: "tail-risk-ddpm"
