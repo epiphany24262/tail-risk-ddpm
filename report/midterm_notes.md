@@ -1,59 +1,45 @@
 # Midterm Notes
 
-## Status summary
+## Status Summary
 
 | Milestone | Status |
 |-----------|--------|
-| Data download & preprocessing | ✅ Complete |
-| Dataset / DataLoader | ✅ Complete |
-| Model skeleton (1-D U-Net) | ✅ Complete |
-| Diffusion forward/reverse process | ✅ Complete |
-| Training loop | ✅ Complete |
-| DDIM sampler | ✅ Complete |
-| Evaluation (VaR, ES, KS, Spearman) | ✅ Complete |
-| Attribution (marginal + Shapley) | ✅ Complete |
-| Exploratory notebooks | ✅ Complete |
-| End-to-end run on real data | 🔲 Pending |
-| Hyperparameter tuning | 🔲 Pending |
-| Report write-up | 🔲 Pending |
+| Data download & preprocessing | Complete |
+| Dataset / DataLoader | Complete |
+| Model skeleton (1-D U-Net) | Complete |
+| Diffusion forward/reverse process | Complete |
+| Training loop | Complete |
+| DDIM sampler | Complete |
+| Evaluation (VaR, ES, KS, Spearman) | Complete |
+| Attribution (marginal + Shapley) | Complete |
+| Exploratory notebooks | Complete |
+| End-to-end run on real data | Pending |
+| Hyperparameter tuning | Pending |
+| Report write-up | Pending |
 
 ---
 
-## Open questions
+## Open Questions
 
-1. **Classifier-free guidance**: Should we implement CFG to strengthen
-   conditioning on the tail label?  The current unconditional path still
-   generates tail-like scenarios when conditioned on label=1, but CFG would
-   allow tunable guidance scale.
-
-2. **Multi-step sequence generation**: Currently only the *last day* of each
-   scenario window is used for risk metrics.  Future work should evaluate
-   entire path distributions (e.g., multi-day VaR).
-
-3. **VIX as an exogenous signal**: VIX is included as an asset channel but
-   could be repurposed as an additional scalar conditioning input (alongside
-   the tail label) to generate scenarios conditional on a specific volatility
-   regime.
-
-4. **Evaluation metric completeness**: Add rank-histogram / PIT coverage test
-   to validate calibration of the generated distribution.
+1. **Classifier-free guidance**: Should we implement CFG to strengthen conditioning on the tail label?
+2. **Multi-step sequence generation**: Current evaluation focuses on the last day in each window; should we extend to multi-day risk metrics?
+3. **Exogenous volatility signal**: Should volatility regime be provided as an explicit conditioning scalar?
+4. **Calibration checks**: Should we add rank-histogram / PIT coverage tests?
 
 ---
 
-## Key findings so far
+## Key Findings So Far
 
-- Cosine schedule trains ~15% faster to the same loss level as linear schedule
-  on the SPY/QQQ/TLT/GLD dataset.
-- Tail events cluster in 2001–2002, 2008–2009, 2020: the model must learn
-  these regimes from only 70% of data — data augmentation may help.
-- DDIM at 50 steps produces visually similar samples to full DDPM at 1 000
-  steps with ~20× speed-up.
+- Cosine noise schedule converges faster than linear schedule in initial experiments.
+- Tail events are sparse and regime-clustered, so effective sample size for extremes remains limited.
+- DDIM with fewer steps is significantly faster while preserving sample quality in preliminary checks.
 
 ---
 
-## Next steps
+## Next Steps
 
-- [ ] Run `download_data.py` → `preprocess.py` → `train.py` end-to-end.
-- [ ] Tune learning rate, hidden_dim, and num_res_blocks on validation loss.
-- [ ] Generate 10 000 tail scenarios and run full evaluation pipeline.
-- [ ] Write final report section on results.
+- [x] Run `download_data.py` -> `preprocess.py` end-to-end.
+- [ ] Run `train.py` and `sample.py` end-to-end on current A-share dataset.
+- [ ] Tune key hyperparameters on validation split.
+- [ ] Generate larger tail scenario sets and run full evaluation pipeline.
+- [ ] Finalize report section with quantitative tables and figures.

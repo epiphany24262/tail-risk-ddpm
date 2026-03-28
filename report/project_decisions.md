@@ -5,6 +5,9 @@
 - Time range: 2015-01-01 to latest trading day
 - Frequency: daily
 - Return type: log return
+- Note: because assets have different listing dates, default `prices.parquet`
+  keeps full history (unbalanced panel). Use common-date alignment only when a
+  balanced panel is explicitly required.
 
 ## Portfolio
 - Equal-weight portfolio

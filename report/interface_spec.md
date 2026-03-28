@@ -11,6 +11,12 @@ Columns:
 - volume
 - amount
 
+Conventions:
+- sorted by (`trade_date`, `asset`)
+- `trade_date` dtype: datetime64[ns]
+- numeric fields are parsed as numeric types
+- default output may be unbalanced across assets before their listing dates
+
 ## dataset_*.npz
 Contains:
 - X: shape [num_samples, 20, N]

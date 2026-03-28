@@ -25,6 +25,22 @@ This repository implements the midterm MVP of our project:
 - C: model training and sampling (`model.py`, `diffusion.py`, `train.py`, `sample.py`)
 - D: evaluation and attribution (`evaluate.py`, `attribution.py`)
 
+## Environment
+- Python: 3.10+
+- Dependency install:
+  - `pip install -r requirements.txt`
+  - or `conda install --file requirements.txt` (if using conda env)
+
+## Data Pipeline (A)
+1. Download raw data (defaults: 2015-01-01 to today):
+   - `python src/download_data.py`
+2. Build `prices.parquet` (keep full history by default):
+   - `python src/preprocess.py`
+3. Optional: enforce common trading dates across all assets:
+   - `python src/preprocess.py --align-common-dates`
+4. Validate date coverage and schema:
+   - `python src/check_dates.py`
+
 ## Current Scope
 Midterm only:
 - 5 assets
