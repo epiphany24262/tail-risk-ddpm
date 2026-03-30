@@ -2,8 +2,8 @@ assets:
   - hs300_etf
   - zz500_etf
   - cyb_etf
-  - broker_etf
-  - bank_etf
+  - cyb50_etf
+  - kc50_etf
 
 start_date: "2015-01-01"
 end_date: null
