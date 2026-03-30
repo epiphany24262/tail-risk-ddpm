@@ -50,6 +50,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Fail if configured assets are not fully available in prices.parquet",
     )
+    parser.add_argument(
+        "--tables-out-dir",
+        default="outputs/tables",
+        help="Output directory for report-friendly csv tables",
+    )
     return parser.parse_args()
 
 
@@ -350,6 +355,53 @@ def summarize_tail_stats(
     }
 
 
+def export_report_tables(
+    features: pd.DataFrame,
+    stats: dict[str, Any],
+    out_dir: Path,
+) -> tuple[Path, Path]:
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    comp_rows: list[dict[str, Any]] = []
+    for split_name, info in stats["splits"].items():
+        comp_rows.append(
+            {
+                "split": split_name,
+                "n_samples": info["n_samples"],
+                "n_tail": info["n_tail"],
+                "tail_ratio": info["tail_ratio"],
+                "date_start": info["date_start"],
+                "date_end": info["date_end"],
+            }
+        )
+    composition_df = pd.DataFrame(comp_rows).sort_values("split").reset_index(drop=True)
+    composition_path = out_dir / "b_dataset_composition.csv"
+    composition_df.to_csv(composition_path, index=False, encoding="utf-8-sig")
+
+    key_cols = ["portfolio_return", "tail_loss"] + CONTINUOUS_CONDITIONS
+    quantiles = [0.05, 0.5, 0.95]
+    rows: list[dict[str, Any]] = []
+    for col in key_cols:
+        s = features[col].dropna()
+        rows.append(
+            {
+                "feature": col,
+                "count": int(s.shape[0]),
+                "mean": float(s.mean()) if not s.empty else None,
+                "std": float(s.std()) if not s.empty else None,
+                "q05": float(s.quantile(quantiles[0])) if not s.empty else None,
+                "q50": float(s.quantile(quantiles[1])) if not s.empty else None,
+                "q95": float(s.quantile(quantiles[2])) if not s.empty else None,
+                "min": float(s.min()) if not s.empty else None,
+                "max": float(s.max()) if not s.empty else None,
+            }
+        )
+    desc_df = pd.DataFrame(rows)
+    desc_path = out_dir / "b_feature_descriptive_stats.csv"
+    desc_df.to_csv(desc_path, index=False, encoding="utf-8-sig")
+    return composition_path, desc_path
+
+
 def main() -> None:
     args = parse_args()
 
@@ -357,6 +409,7 @@ def main() -> None:
     prices_path = Path(args.prices_path)
     features_path = Path(args.features_path)
     out_dir = Path(args.out_dir)
+    tables_out_dir = Path(args.tables_out_dir)
 
     out_dir.mkdir(parents=True, exist_ok=True)
     features_path.parent.mkdir(parents=True, exist_ok=True)
@@ -430,6 +483,10 @@ def main() -> None:
     stats_path = out_dir / "tail_stats.json"
     stats_path.write_text(json.dumps(stats, indent=2), encoding="utf-8")
     print(f"[saved] {stats_path}")
+
+    comp_path, desc_path = export_report_tables(features=features, stats=stats, out_dir=tables_out_dir)
+    print(f"[saved] {comp_path}")
+    print(f"[saved] {desc_path}")
 
     print("[summary]")
     print(

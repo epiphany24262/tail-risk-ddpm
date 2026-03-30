@@ -55,21 +55,29 @@ This repository implements the midterm MVP of our project:
    - `python src/preprocess.py --align-common-dates`
 4. Validate date coverage and schema:
    - `python src/check_dates.py`
+5. Generate quality summary table automatically during preprocessing:
+   - `outputs/tables/a_data_quality_summary.csv`
 
 ## Feature Pipeline (B)
 1. Build features and split datasets:
    - `python src/make_dataset.py --config configs/data.yaml`
 2. Generated files:
-   - `data/processed/features.parquet`
-   - `data/processed/dataset_train.npz`
-   - `data/processed/dataset_valid.npz`
-   - `data/processed/dataset_test.npz`
-   - `data/processed/tail_stats.json`
+  - `data/processed/features.parquet`
+  - `data/processed/dataset_train.npz`
+  - `data/processed/dataset_valid.npz`
+  - `data/processed/dataset_test.npz`
+  - `data/processed/tail_stats.json`
+  - `outputs/tables/b_dataset_composition.csv`
+  - `outputs/tables/b_feature_descriptive_stats.csv`
 
 Notes:
 - `make_dataset.py` builds a balanced panel using common dates across selected assets.
 - `configs/data.yaml` `start_date` / `end_date` are applied before panel alignment.
 - With current asset pool, common-date range is `2020-11-16` to latest trading day.
+
+Data documentation:
+- `report/data_dictionary.md`
+- `report/data_cleaning_notes.md`
 
 ## Model Pipeline (C)
 1. Train conditional DDPM:

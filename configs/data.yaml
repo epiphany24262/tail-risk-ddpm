@@ -5,6 +5,23 @@ assets:
   - cyb50_etf
   - kc50_etf
 
+asset_pool:
+  - code: "510300"
+    name: "hs300_etf"
+    raw_file: "hs300_etf_510300.csv"
+  - code: "510500"
+    name: "zz500_etf"
+    raw_file: "zz500_etf_510500.csv"
+  - code: "159915"
+    name: "cyb_etf"
+    raw_file: "cyb_etf_159915.csv"
+  - code: "159949"
+    name: "cyb50_etf"
+    raw_file: "cyb50_etf_159949.csv"
+  - code: "588000"
+    name: "kc50_etf"
+    raw_file: "kc50_etf_588000.csv"
+
 start_date: "2015-01-01"
 end_date: null
 

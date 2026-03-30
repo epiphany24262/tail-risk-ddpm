@@ -40,6 +40,8 @@ Current values in this repository:
 Related files:
 - `data/processed/features.parquet`
 - `data/processed/tail_stats.json`
+- `outputs/tables/b_dataset_composition.csv`
+- `outputs/tables/b_feature_descriptive_stats.csv`
 
 ## sample outputs
 - file name format: sample_{condition}_{ckpt}.npy

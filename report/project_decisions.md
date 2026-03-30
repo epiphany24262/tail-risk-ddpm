@@ -11,16 +11,20 @@
 
 ## Portfolio
 - Equal-weight portfolio
+- Rationale: MVP baseline with minimal assumptions and easy reproducibility.
+- Future extension: add weighting sensitivity checks (e.g., value-weighted / risk-parity) in final stage.
 
 ## Tail Definition
 - Loss = - portfolio return
 - Tail flag if loss >= 95th percentile
+- Threshold is estimated on train split only to avoid look-ahead bias.
 
 ## Factors
 - 5-day cumulative return
 - 20-day rolling volatility
 - 5-day amount change
 - high_vol state label
+- Continuous factors are standardized by train-split mean/std (high_vol remains binary).
 
 ## Window
 - length = 20
