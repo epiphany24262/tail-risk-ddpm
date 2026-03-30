@@ -1,4 +1,4 @@
-# tail-risk-ddpm
+ # tail-risk-ddpm
 
 MVP for financial tail-risk scenario generation and attribution with conditional DDPM.
 
