@@ -25,6 +25,18 @@ This repository implements the midterm MVP of our project:
 - C: model training and sampling (`model.py`, `diffusion.py`, `train.py`, `sample.py`)
 - D: evaluation and attribution (`evaluate.py`, `attribution.py`)
 
+## Implementation Status (Current)
+- A module: implemented and runnable
+  - scripts: `src/download_data.py`, `src/preprocess.py`, `src/check_dates.py`
+  - outputs: `data/raw/*.csv`, `data/processed/prices.parquet`
+- B module: implemented and runnable
+  - script: `src/make_dataset.py`
+  - config: `configs/data.yaml`
+  - outputs: `data/processed/features.parquet`, `dataset_train.npz`, `dataset_valid.npz`,
+    `dataset_test.npz`, `tail_stats.json`
+- C module: placeholder files only (not implemented yet)
+- D module: placeholder files only (not implemented yet)
+
 ## Environment
 - Python: 3.10+
 - Dependency install:
@@ -40,6 +52,20 @@ This repository implements the midterm MVP of our project:
    - `python src/preprocess.py --align-common-dates`
 4. Validate date coverage and schema:
    - `python src/check_dates.py`
+
+## Feature Pipeline (B)
+1. Build features and split datasets:
+   - `python src/make_dataset.py --config configs/data.yaml`
+2. Generated files:
+   - `data/processed/features.parquet`
+   - `data/processed/dataset_train.npz`
+   - `data/processed/dataset_valid.npz`
+   - `data/processed/dataset_test.npz`
+   - `data/processed/tail_stats.json`
+
+Notes:
+- `make_dataset.py` builds a balanced panel using common dates across selected assets.
+- With current asset pool, common-date range is `2020-11-16` to latest trading day.
 
 ## Current Scope
 Midterm only:

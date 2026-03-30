@@ -75,7 +75,18 @@ def _load_one_csv(file_path: Path, asset_name: str) -> pd.DataFrame:
 def _summarize(df: pd.DataFrame, title: str) -> None:
     print(f"[summary] {title}")
     print(f"  shape={df.shape}")
-    print(f"  date_range={df['trade_date'].min().date()} -> {df['trade_date'].max().date()}")
+
+    if df.empty or df["trade_date"].dropna().empty:
+        date_range_str = "N/A -> N/A"
+    else:
+        min_date = df["trade_date"].min()
+        max_date = df["trade_date"].max()
+        if pd.isna(min_date) or pd.isna(max_date):
+            date_range_str = "N/A -> N/A"
+        else:
+            date_range_str = f"{min_date.date()} -> {max_date.date()}"
+
+    print(f"  date_range={date_range_str}")
     per_asset = df.groupby("asset")["trade_date"].nunique().sort_index()
     print("  per_asset_trading_days:")
     for asset, n_days in per_asset.items():

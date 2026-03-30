@@ -26,11 +26,16 @@
 - length = 20
 
 ## Split
-- train: 2015-2022
-- valid: 2023
-- test: 2024-latest
+- Configured boundary:
+  - train_end: 2022-12-31
+  - valid_end: 2023-12-31
+- Effective split on current common-date panel:
+  - train: 2020-11-16 to 2022-12-30
+  - valid: 2023-01-03 to 2023-12-29
+  - test: 2024-01-02 to latest
 
 ## Model
 - minimal conditional DDPM
 - MLP backbone first
 - tail sample weight = 3
+- Implementation status: pending (model/training/sampling scripts are placeholders)

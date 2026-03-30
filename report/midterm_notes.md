@@ -6,12 +6,12 @@
 |-----------|--------|
 | Data download & preprocessing | Complete |
 | Dataset / DataLoader | Complete |
-| Model skeleton (1-D U-Net) | Complete |
-| Diffusion forward/reverse process | Complete |
-| Training loop | Complete |
-| DDIM sampler | Complete |
-| Evaluation (VaR, ES, KS, Spearman) | Complete |
-| Attribution (marginal + Shapley) | Complete |
+| Model skeleton (1-D U-Net) | Pending |
+| Diffusion forward/reverse process | Pending |
+| Training loop | Pending |
+| DDIM sampler | Pending |
+| Evaluation (VaR, ES, KS, Spearman) | Pending |
+| Attribution (marginal + Shapley) | Pending |
 | Exploratory notebooks | Complete |
 | End-to-end run on real data | Pending |
 | Hyperparameter tuning | Pending |
@@ -30,16 +30,18 @@
 
 ## Key Findings So Far
 
-- Cosine noise schedule converges faster than linear schedule in initial experiments.
-- Tail events are sparse and regime-clustered, so effective sample size for extremes remains limited.
-- DDIM with fewer steps is significantly faster while preserving sample quality in preliminary checks.
+- A module produces `prices.parquet` with full-history coverage from 2015 onward.
+- B module produces balanced-panel datasets (`dataset_train/valid/test.npz`) from common dates.
+- With current asset pool, common-date range starts at 2020-11-16 due to asset listing dates.
+- Training/evaluation findings are not finalized because C and D scripts are still placeholders.
 
 ---
 
 ## Next Steps
 
 - [x] Run `download_data.py` -> `preprocess.py` end-to-end.
-- [ ] Run `train.py` and `sample.py` end-to-end on current A-share dataset.
-- [ ] Tune key hyperparameters on validation split.
-- [ ] Generate larger tail scenario sets and run full evaluation pipeline.
+- [x] Run `make_dataset.py` and generate `dataset_*.npz`.
+- [ ] Implement `model.py`, `diffusion.py`, `train.py`, and `sample.py`.
+- [ ] Implement `evaluate.py` and `attribution.py`.
+- [ ] Run end-to-end training, sampling, and evaluation.
 - [ ] Finalize report section with quantitative tables and figures.
