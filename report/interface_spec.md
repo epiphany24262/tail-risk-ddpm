@@ -54,7 +54,7 @@ Additional sample artifacts:
   - shape: [num_samples, 21, N]
   - dtype: float32
 - `sample_{condition}_{ckpt}_traj.npy` (when `save_trajectory=true`):
-  - sparse reverse-diffusion trajectory
+  - full reverse-diffusion trajectory
   - dtype: float32
 - `sample_{condition}_{ckpt}_traj_steps.npy` (when `save_trajectory=true`):
   - integer step indices aligned with `traj` first dimension

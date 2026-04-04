@@ -18,7 +18,6 @@ CHECKPOINT_DIR = Path("outputs/checkpoints")
 SAMPLE_OUT_DIR = Path("outputs/samples")
 WINDOW_LENGTH = 20
 COND_DIM = 4
-DEFAULT_SAVE_INTERVAL = 20
 
 
 def sanitize_label(label: str) -> str:
@@ -104,22 +103,11 @@ def to_price_path_from_log_returns(log_returns: np.ndarray) -> np.ndarray:
     return np.concatenate([init, price_tail], axis=1)
 
 
-def sparse_indices_descending_steps(steps_desc: np.ndarray, interval: int) -> np.ndarray:
-    if steps_desc.ndim != 1:
-        raise ValueError("trajectory steps must be 1D.")
-    idx = [i for i, s in enumerate(steps_desc.tolist()) if (s % interval) == 0]
-    idx_set = set(idx)
-    idx_set.add(0)
-    idx_set.add(len(steps_desc) - 1)
-    return np.asarray(sorted(idx_set), dtype=np.int64)
-
-
 def main() -> None:
     sample_cfg = load_yaml(SAMPLE_CONFIG_PATH)
     train_cfg = load_yaml(TRAIN_CONFIG_PATH)
     n_samples = int(sample_cfg.get("n_samples", 1000))
     save_trajectory = bool(sample_cfg.get("save_trajectory", True))
-    save_interval = int(DEFAULT_SAVE_INTERVAL)
 
     cfg_device = str(train_cfg.get("device", "cpu")).lower()
     if cfg_device == "cuda" and not torch.cuda.is_available():
@@ -183,22 +171,12 @@ def main() -> None:
             if full_traj.shape[0] != full_steps.shape[0]:
                 raise ValueError("trajectory and trajectory_steps are not aligned.")
 
-            keep_idx = sparse_indices_descending_steps(full_steps, interval=save_interval)
-            sparse_traj = full_traj[keep_idx].astype(np.float32)
-            sparse_steps = full_steps[keep_idx].astype(np.int32)
-
-            if sparse_traj.shape[0] != sparse_steps.shape[0]:
-                raise ValueError("sparse trajectory and sparse steps are not aligned.")
-
             traj_out = SAMPLE_OUT_DIR / f"sample_{label}_{ckpt_label}_traj.npy"
             step_out = SAMPLE_OUT_DIR / f"sample_{label}_{ckpt_label}_traj_steps.npy"
-            np.save(traj_out, sparse_traj)
-            np.save(step_out, sparse_steps)
-            print(
-                f"[saved] {traj_out} shape={sparse_traj.shape} dtype={sparse_traj.dtype} "
-                f"interval={save_interval}"
-            )
-            print(f"[saved] {step_out} shape={sparse_steps.shape} dtype={sparse_steps.dtype}")
+            np.save(traj_out, full_traj)
+            np.save(step_out, full_steps)
+            print(f"[saved] {traj_out} shape={full_traj.shape} dtype={full_traj.dtype}")
+            print(f"[saved] {step_out} shape={full_steps.shape} dtype={full_steps.dtype}")
 
 
 if __name__ == "__main__":
