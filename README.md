@@ -38,7 +38,9 @@ This repository implements the midterm MVP of our project:
   - scripts: `src/model.py`, `src/diffusion.py`, `src/train.py`, `src/sample.py`
   - outputs: `outputs/checkpoints/latest.pt`, `outputs/checkpoints/best.pt`,
     `outputs/logs/train_log.csv`, `outputs/samples/sample_*.npy`
-- D module: placeholder files only (not implemented yet)
+- D module: implemented and runnable
+  - scripts: `src/evaluate.py`, `src/attribution.py`
+  - outputs: `outputs/tables/d_*.csv`, `outputs/figures/d_*.png`
 
 ## Environment
 - Python: 3.10+
@@ -99,6 +101,28 @@ Notes:
 - `_price.npy`: includes explicit baseline `t0=1`, shape `[num_samples, 21, N]`.
 - `_traj.npy` is sparsely saved trajectory (default interval=20) in `float32`,
   with aligned step index file `_traj_steps.npy` in `int32`, ordered from `T` to `0`.
+
+## Evaluation & Attribution Pipeline (D)
+1. Evaluate real vs generated risk metrics:
+   - `python src/evaluate.py`
+2. Run single-factor what-if attribution:
+   - `python src/attribution.py`
+3. Generated files:
+   - `outputs/tables/d_real_risk_metrics.csv`
+   - `outputs/tables/d_generated_risk_metrics.csv`
+   - `outputs/tables/d_distribution_compare.csv`
+   - `outputs/tables/d_factor_sensitivity.csv`
+   - `outputs/figures/d_return_dist_last_day.png`
+   - `outputs/figures/d_left_tail_compare_last_day.png`
+   - `outputs/figures/d_es_by_condition_last_day.png`
+   - `outputs/figures/d_factor_sensitivity_es_last_day.png`
+   - `outputs/figures/d_factor_sensitivity_es_cum_20d.png`
+
+Notes:
+- `evaluate.py` compares real test-set windows with generated samples on two horizons:
+  `last_day` and `cum_20d`.
+- `attribution.py` perturbs one condition factor at a time and reports
+  risk-metric deltas (`delta_var_5pct`, `delta_es_5pct`) relative to the base condition.
 
 ## Current Scope
 Midterm only:
