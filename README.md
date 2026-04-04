@@ -14,7 +14,7 @@ This repository implements the midterm MVP of our project:
 ## Repository Structure
 - `configs/`: configuration files
 - `data/`: raw and processed data
-- `notebooks/`: quick inspection and plotting notebooks
+- `notebooks/`: runnable analysis notebooks for A/B/D diagnostics
 - `src/`: core scripts
 - `outputs/`: checkpoints, figures, tables, logs
 - `report/`: project notes and interface specs
@@ -133,6 +133,21 @@ Notes:
   risk-metric deltas (`delta_var_5pct`, `delta_es_5pct`) relative to the base condition.
 - `d_factor_sensitivity_meta.json` records the run configuration
   (`checkpoint`, `base_condition`, `n_samples`, factor grids, `timesteps`, `seed`).
+
+## Notebooks
+- `notebooks/01_data_check.ipynb`
+  - A-module presentation notebook on `prices.parquet` and `a_data_quality_summary.csv`.
+  - Focus: data coverage, listing-date heterogeneity, common-date interpretation, and cross-asset correlation.
+- `notebooks/02_tail_label.ipynb`
+  - B-module presentation notebook on `features.parquet`, `dataset_*.npz`, and B tables.
+  - Focus: tail-label balance, split regime differences, and model-ready tensor interface.
+- `notebooks/03_figures.ipynb`
+  - D-module presentation notebook from `outputs/tables/d_*.csv` and `outputs/figures/d_*.png`.
+  - Focus: real-vs-generated risk gaps, distribution mismatch, and condition-level sensitivity interpretation.
+
+Notebook usage:
+- Run from project root with Jupyter/Lab.
+- Paths inside notebooks use `../...` relative to `notebooks/`.
 
 ## Current Scope
 Midterm only:
