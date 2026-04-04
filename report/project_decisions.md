@@ -44,6 +44,16 @@
 - tail sample weight = 3
 - Implementation status: complete for C module (`model.py`, `diffusion.py`, `train.py`, `sample.py`)
 
+## Calibration
+- Calibration grid completed on `seed in {42, 52, 62}` and `tail_weight in {1, 3, 5}`
+- Two runs are retained as reporting anchors:
+  - `seed_42_tailw_1.0`: preferred when overall distribution distance is the main objective
+  - `seed_42_tailw_3.0`: preferred when ES alignment to the real test set is the main objective
+- Decision boundary for the next stage:
+  - if distribution fit is the priority, continue from `tail_weight=1.0`
+  - if tail-risk metric alignment is the priority, continue from `tail_weight=3.0`
+  - if both are required at once, move to condition expansion or backbone upgrade rather than more seed/weight tuning
+
 ## Evaluation
 - Compare real test windows vs generated samples on two horizons:
   - `last_day`

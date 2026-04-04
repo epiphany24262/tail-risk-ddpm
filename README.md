@@ -155,7 +155,13 @@ Notes:
 - Calibration runs overwrite the live `outputs/` runtime folders during execution; the authoritative archived results are under `outputs/calibration/...`.
 - `calibration_summary.csv` is the main experiment ledger and ranks runs by:
   `mean_wasserstein`, then `mean_abs_es_gap`, then `mean_ks_stat`.
-- Formal presentation should prefer the top-ranked `best` checkpoint run rather than `latest`.
+- Current reporting should compare two calibration anchors rather than a single winner:
+  `seed_42_tailw_1.0` for distribution-distance priority and `seed_42_tailw_3.0`
+  for ES-gap priority.
+- If overall distribution fit is the next-stage priority, continue from `tail_weight=1.0`.
+  If tail-risk metric alignment is the next-stage priority, continue from `tail_weight=3.0`.
+  If both objectives are required simultaneously, the next milestone should move to condition
+  expansion or backbone upgrade rather than more seed/weight tuning.
 
 ## Notebooks
 - `notebooks/01_data_check.ipynb`

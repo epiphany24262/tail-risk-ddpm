@@ -42,6 +42,13 @@
 - Current D finding: the evaluation layer is working, but generated distributions remain materially miscalibrated relative to real test data.
 - Current optimization priority: calibrate training/sampling first, then expand factors or upgrade the backbone if calibration remains insufficient.
 - Current calibration ledger is evaluation-only and does not include attribution sweeps.
+- Current reporting uses two calibration anchors instead of a single winner:
+  `seed_42_tailw_1.0` for distribution-distance priority and `seed_42_tailw_3.0`
+  for ES-gap priority.
+- This calibration round is now a decision boundary:
+  continue with `tail_weight=1.0` if the next milestone prioritizes overall distribution fit,
+  continue with `tail_weight=3.0` if the next milestone prioritizes tail-risk metric alignment,
+  and move to condition expansion or backbone upgrade if both objectives must improve together.
 
 ---
 
