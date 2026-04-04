@@ -65,6 +65,27 @@ Notes:
 - `sample_{condition}_{ckpt}.npy` stores 20-step log-return paths.
 - `_price.npy` is derived from log-returns via cumulative sum + exponential.
 
+## calibration outputs
+- `outputs/calibration/calibration_summary.csv`
+  - columns:
+    - `seed`
+    - `tail_weight`
+    - `checkpoint_used`
+    - `mean_wasserstein`
+    - `mean_ks_stat`
+    - `mean_abs_es_gap`
+    - `mean_abs_var_gap`
+    - `run_dir`
+    - `rank`
+- `outputs/calibration/seed_{seed}_tailw_{tail_weight}/`
+  - snapshot of one calibration run
+  - contains copied `checkpoints`, `logs`, `samples`, `tables`, `figures`
+
+Conventions:
+- calibration grid is fixed at seeds `42/52/62` and tail weights `1.0/3.0/5.0`
+- calibration generation and evaluation use `best` checkpoint only
+- ranking priority: `mean_wasserstein` ascending, then `mean_abs_es_gap`, then `mean_ks_stat`
+
 ## D outputs
 
 ### Evaluation tables

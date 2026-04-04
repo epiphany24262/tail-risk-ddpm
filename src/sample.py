@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import re
 from pathlib import Path
 
@@ -18,6 +19,18 @@ CHECKPOINT_DIR = Path("outputs/checkpoints")
 SAMPLE_OUT_DIR = Path("outputs/samples")
 WINDOW_LENGTH = 20
 COND_DIM = 4
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Generate conditional DDPM samples.")
+    parser.add_argument("--config", default=str(SAMPLE_CONFIG_PATH), help="Path to sample yaml config")
+    parser.add_argument(
+        "--checkpoint",
+        default=None,
+        help="Optional checkpoint override: latest, best, or explicit .pt path",
+    )
+    parser.add_argument("--n-samples", type=int, default=None, help="Optional override for config n_samples")
+    return parser.parse_args()
 
 
 def sanitize_label(label: str) -> str:
@@ -104,9 +117,10 @@ def to_price_path_from_log_returns(log_returns: np.ndarray) -> np.ndarray:
 
 
 def main() -> None:
-    sample_cfg = load_yaml(SAMPLE_CONFIG_PATH)
+    args = parse_args()
+    sample_cfg = load_yaml(Path(args.config))
     train_cfg = load_yaml(TRAIN_CONFIG_PATH)
-    n_samples = int(sample_cfg.get("n_samples", 1000))
+    n_samples = int(args.n_samples) if args.n_samples is not None else int(sample_cfg.get("n_samples", 1000))
     save_trajectory = bool(sample_cfg.get("save_trajectory", True))
 
     cfg_device = str(train_cfg.get("device", "cpu")).lower()
@@ -116,7 +130,8 @@ def main() -> None:
     else:
         device = torch.device(cfg_device)
 
-    ckpt_label, ckpt_path = resolve_checkpoint(str(sample_cfg.get("checkpoint", "latest")))
+    checkpoint_name = str(args.checkpoint) if args.checkpoint is not None else str(sample_cfg.get("checkpoint", "latest"))
+    ckpt_label, ckpt_path = resolve_checkpoint(checkpoint_name)
     checkpoint = torch.load(ckpt_path, map_location=device)
 
     n_assets_runtime, cond_names = load_reference_dims()
@@ -137,6 +152,11 @@ def main() -> None:
 
     ddpm = DDPM(timesteps=int(checkpoint.get("timesteps", 1000)), device=str(device))
     cond_items = condition_items_from_config(sample_cfg, cond_names)
+
+    print(
+        f"[config] config={Path(args.config)} checkpoint={ckpt_label} "
+        f"n_samples={n_samples} save_trajectory={save_trajectory}"
+    )
 
     SAMPLE_OUT_DIR.mkdir(parents=True, exist_ok=True)
     for i, (label, cond_vec) in enumerate(cond_items):

@@ -101,6 +101,8 @@ Notes:
 - `_price.npy`: includes explicit baseline `t0=1`, shape `[num_samples, 21, N]`.
 - `_traj.npy` is the full reverse-diffusion trajectory in `float32`,
   with aligned step index file `_traj_steps.npy` in `int32`, ordered from `T` to `0`.
+- `train.py` supports optional CLI overrides `--config`, `--seed`, `--tail-weight`.
+- `sample.py` supports optional CLI overrides `--config`, `--checkpoint`, `--n-samples`.
 
 ## Evaluation & Attribution Pipeline (D)
 1. Evaluate real vs generated risk metrics:
@@ -134,6 +136,23 @@ Notes:
 - `d_factor_sensitivity_meta.json` records the run configuration
   (`checkpoint`, `base_condition`, `n_samples`, factor grids, `timesteps`, `seed`).
 
+## Calibration Workflow
+1. Run the calibration grid:
+   - `python src/calibrate.py`
+2. Calibration policy:
+   - fixed seeds: `42`, `52`, `62`
+   - fixed tail weights: `1.0`, `3.0`, `5.0`
+   - generation/evaluation use `best` checkpoint only
+3. Generated files:
+   - `outputs/calibration/calibration_summary.csv`
+   - `outputs/calibration/seed_{seed}_tailw_{tail_weight}/...`
+
+Notes:
+- This stage prioritizes training/sampling calibration before condition expansion or backbone upgrades.
+- `calibration_summary.csv` is the main experiment ledger and ranks runs by:
+  `mean_wasserstein`, then `mean_abs_es_gap`, then `mean_ks_stat`.
+- Formal presentation should prefer the top-ranked `best` checkpoint run rather than `latest`.
+
 ## Notebooks
 - `notebooks/01_data_check.ipynb`
   - A-module presentation notebook on `prices.parquet` and `a_data_quality_summary.csv`.
@@ -158,3 +177,4 @@ Midterm only:
 - 20-day windows
 - conditional DDPM
 - VaR/ES + what-if attribution
+- current optimization priority: calibration before model expansion

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import csv
 import random
 from pathlib import Path
@@ -21,6 +22,19 @@ LOG_DIR = Path("outputs/logs")
 TRAIN_CONFIG_PATH = Path("configs/train.yaml")
 WINDOW_LENGTH = 20
 COND_DIM = 4
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Train conditional DDPM with tail-weighted loss.")
+    parser.add_argument("--config", default=str(TRAIN_CONFIG_PATH), help="Path to train yaml config")
+    parser.add_argument("--seed", type=int, default=None, help="Optional override for config seed")
+    parser.add_argument(
+        "--tail-weight",
+        type=float,
+        default=None,
+        help="Optional override for config tail_weight",
+    )
+    return parser.parse_args()
 
 
 def set_seed(seed: int) -> None:
@@ -114,7 +128,8 @@ def save_checkpoint(
 
 
 def main() -> None:
-    config = load_config(TRAIN_CONFIG_PATH)
+    args = parse_args()
+    config = load_config(Path(args.config))
     model_name = str(config.get("model_name", "conditional_ddpm_mlp"))
     if model_name != "conditional_ddpm_mlp":
         print(
@@ -124,9 +139,9 @@ def main() -> None:
     epochs = int(config.get("epochs", 50))
     batch_size = int(config.get("batch_size", 64))
     learning_rate = float(config.get("learning_rate", 1e-3))
-    tail_weight = float(config.get("tail_weight", 3.0))
+    tail_weight = float(args.tail_weight) if args.tail_weight is not None else float(config.get("tail_weight", 3.0))
     normal_weight = float(config.get("normal_weight", 1.0))
-    seed = int(config.get("seed", 42))
+    seed = int(args.seed) if args.seed is not None else int(config.get("seed", 42))
 
     cfg_device = str(config.get("device", "cpu")).lower()
     if cfg_device == "cuda" and not torch.cuda.is_available():
@@ -138,6 +153,11 @@ def main() -> None:
     set_seed(seed)
     CHECKPOINT_DIR.mkdir(parents=True, exist_ok=True)
     LOG_DIR.mkdir(parents=True, exist_ok=True)
+
+    print(
+        f"[config] config={Path(args.config)} seed={seed} tail_weight={tail_weight:.4f} "
+        f"epochs={epochs} batch_size={batch_size} lr={learning_rate}"
+    )
 
     x_train, c_train, y_train = load_split_dataset(TRAIN_PATH)
     x_valid, c_valid, y_valid = load_split_dataset(VALID_PATH)

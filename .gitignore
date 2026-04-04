@@ -33,11 +33,13 @@ outputs/samples/*
 outputs/figures/*
 outputs/tables/*
 outputs/logs/*
+outputs/calibration/*
 !outputs/checkpoints/.gitkeep
 !outputs/samples/.gitkeep
 !outputs/figures/.gitkeep
 !outputs/tables/.gitkeep
 !outputs/logs/.gitkeep
+!outputs/calibration/.gitkeep
 
 # Logs / experiment tracking
 wandb/

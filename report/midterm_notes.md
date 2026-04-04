@@ -14,7 +14,8 @@
 | Attribution (single-factor what-if) | Complete |
 | Exploratory notebooks | Complete (refreshed as presentation-oriented materials with summaries, caveats, and reproducibility context) |
 | End-to-end run on real data | Complete (A->B->C->D) |
-| Hyperparameter tuning | Pending |
+| Calibration grid (seed x tail_weight) | Complete |
+| Hyperparameter tuning / model expansion | Pending |
 | Report write-up | Pending |
 
 ---
@@ -39,6 +40,7 @@
   `01_data_check.ipynb`, `02_tail_label.ipynb`, `03_figures.ipynb`.
 - Current B split caveat: validation tail density is much lower than train/test, so validation is a weak stress-regime proxy.
 - Current D finding: the evaluation layer is working, but generated distributions remain materially miscalibrated relative to real test data.
+- Current optimization priority: calibrate training/sampling first, then expand factors or upgrade the backbone if calibration remains insufficient.
 
 ---
 
@@ -49,4 +51,5 @@
 - [x] Implement `model.py`, `diffusion.py`, `train.py`, and `sample.py`.
 - [x] Implement `evaluate.py` and `attribution.py`.
 - [x] Run end-to-end training, sampling, and evaluation.
+- [x] Add multi-seed, multi-tail-weight calibration workflow and summary ledger.
 - [ ] Finalize report section with quantitative tables and figures.
