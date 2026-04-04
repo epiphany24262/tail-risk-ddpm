@@ -4,7 +4,7 @@ import argparse
 import random
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, cast
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -124,12 +124,16 @@ def histogram_spearman(x: np.ndarray, y: np.ndarray, bins: int = 40) -> float:
     edges = np.linspace(lo, hi, bins + 1)
     hx, _ = np.histogram(x, bins=edges, density=True)
     hy, _ = np.histogram(y, bins=edges, density=True)
-    rho = stats.spearmanr(hx, hy).correlation
-    return float(rho) if rho is not None else float("nan")
+    rho_raw = cast(tuple[float, float], stats.spearmanr(hx, hy))[0]
+    rho = float(rho_raw)
+    return rho if np.isfinite(rho) else float("nan")
 
 
 def distribution_compare(real: np.ndarray, generated: np.ndarray) -> dict[str, float]:
-    ks_stat, ks_pvalue = stats.ks_2samp(real, generated, alternative="two-sided", method="auto")
+    ks_stat, ks_pvalue = cast(
+        tuple[float, float],
+        stats.ks_2samp(real, generated, alternative="two-sided", method="auto"),
+    )
     return {
         "ks_stat": float(ks_stat),
         "ks_pvalue": float(ks_pvalue),
