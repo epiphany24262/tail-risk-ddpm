@@ -41,6 +41,10 @@ outputs/calibration/*
 !outputs/logs/.gitkeep
 !outputs/calibration/.gitkeep
 
+# Nested runtime folders accidentally created under src
+src/data/
+src/outputs/
+
 # Logs / experiment tracking
 wandb/
 *.tfevents.*
